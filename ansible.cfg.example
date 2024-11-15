@@ -1,0 +1,6 @@
+[defaults]
+inventory = inventory/template.yaml
+roles_path = roles/
+collections_path = collections/
+vault_password_file = .vault_pw
+stdout_callback = yaml

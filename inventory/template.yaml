@@ -1,0 +1,10 @@
+---
+
+debian_vms:
+  hosts:
+    debian-vm-01:
+      ansible_host: 192.168.0.90
+  vars:
+    # This is the user that has SSH access to the machines.
+    ansible_user: root
+
