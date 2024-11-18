@@ -1,0 +1,5 @@
+compose_file: "{{ docker_compose_dir }}/docker-compose.yaml"
+certs_dir: "{{ docker_compose_dir }}/certs"
+nginx_conf_file: "{{ docker_compose_dir }}/nginx.conf"
+html_dir: "{{ docker_compose_dir }}/html"
+

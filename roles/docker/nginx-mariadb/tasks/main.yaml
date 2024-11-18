@@ -1,0 +1,58 @@
+- name: Ensure directories exist for Docker Compose
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0755'
+  loop:
+    - "{{ docker_compose_dir }}"
+    - "{{ certs_dir }}"
+    - "{{ html_dir }}"
+
+- name: Render and copy docker-compose template
+  ansible.builtin.template:
+    src: "docker-compose.yaml.j2"
+    dest: "{{ docker_compose_dir }}/docker-compose.yaml"
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0644'
+
+- name: Ensure private key is present
+  community.crypto.openssl_privatekey:
+    path: "{{ certs_dir }}/nginx-selfsigned.key"
+    size: 2048
+    mode: "0600"
+    type: RSA
+    
+- name: Ensure self-signed cert is present
+  community.crypto.x509_certificate:
+    path: "{{ certs_dir }}/nginx-selfsigned.crt"
+    privatekey_path: "{{ certs_dir }}/nginx-selfsigned.key"
+    provider: selfsigned
+    selfsigned_not_after: "+3650d"
+    mode: "0644"
+  notify: Restart Docker Compose
+
+- name: Copy custom NGINX configuration file
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: "{{ nginx_conf_file }}"
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0644'
+
+- name: Create an HTML file with "Hello UDEMX!"
+  ansible.builtin.copy:
+    src: index.html
+    dest: "{{ html_dir }}/index.html"
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0644'
+
+- name: Start services with Docker Compose
+  ansible.builtin.command: docker compose -f "{{ compose_file }}" up -d
+  become_user: "{{ add_user }}"
+  args:
+    chdir: "{{ docker_compose_dir }}"
+

@@ -1,0 +1,35 @@
+services:
+  nginx:
+    image: "nginx:{{ docker_project.nginx.version }}"
+    container_name: {{ docker_project.nginx.container_name }}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./html:/usr/share/nginx/html:ro
+      - ./certs:/etc/nginx/certs:ro
+    networks:
+      - app_network
+
+  mariadb:
+    image: "mariadb:{{ docker_project.mariadb.version }}"
+    container_name: {{ docker_project.mariadb.container_name }}
+    restart: unless-stopped
+    environment:
+      # MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: udemx-db
+      MYSQL_USER: {{ docker_project.mariadb.user }}
+      MYSQL_PASSWORD: {{ docker_project.mariadb.password }}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - app_network
+
+volumes:
+  mariadb_data:
+
+networks:
+  app_network:
+    driver: bridge

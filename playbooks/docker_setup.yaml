@@ -1,0 +1,9 @@
+- name: Setup basic configurations
+  hosts: debian_vms
+  become: true
+  roles:
+    - role: docker/install
+      tags: install
+    - role: docker/nginx-mariadb
+      tags: nginx-mariadb
+

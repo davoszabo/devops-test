@@ -11,6 +11,17 @@ debian_vms:
     add_user: udemx
     add_user_home_dir: "/opt/{{ add_user }}"
 
+    docker_compose_dir: "{{ add_user_home_dir }}/project"
+    docker_project:
+      nginx:
+        version: 1.27.2
+        container_name: nginx
+      mariadb:
+        version: 11.5.2
+        container_name: mariadb
+        user: "{{ add_user }}"
+        password: ""
+
       
 # For 'terraform' commands
 

@@ -1,0 +1,6 @@
+- name: Restart Docker Compose
+  ansible.builtin.command: docker compose -f "{{ compose_file }}" restart
+  become_user: "{{ add_user }}"
+  args:
+    chdir: "{{ docker_compose_dir }}"
+
