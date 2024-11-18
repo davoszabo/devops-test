@@ -1,0 +1,8 @@
+- name: Create user `{{ add_user }}` with {{ add_user_home_dir }} as home directory
+  ansible.builtin.user:
+    name: "{{ add_user }}"
+    home: "{{ add_user_home_dir }}"
+    shell: /bin/bash
+    create_home: true
+    state: present
+

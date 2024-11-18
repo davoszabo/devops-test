@@ -1,0 +1,47 @@
+- name: Change SSH port to 23
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?Port '
+    line: 'Port 23'
+    state: present
+
+- name: Disable password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication '
+    line: 'PasswordAuthentication no'
+    state: present
+
+# - name: Ensure PermitRootLogin is disabled
+#   ansible.builtin.lineinfile:
+#     path: /etc/ssh/sshd_config
+#     regexp: '^#?PermitRootLogin '
+#     line: 'PermitRootLogin no'
+#     state: present
+
+- name: Allow only PEM-based authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PubkeyAuthentication '
+    line: 'PubkeyAuthentication yes'
+    state: present
+
+- name: Restart SSH service to apply changes
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+
+# - name: Open port 23 in firewall (optional, depending on firewall)
+#   ansible.builtin.firewalld:
+#     port: 23/tcp
+#     permanent: yes
+#     state: enabled
+#   when: ansible_facts['os_family'] == 'RedHat'  # Adjust as per distro if using firewalld
+# 
+# - name: Open port 23 in firewall (if ufw is used on Debian)
+#   ansible.builtin.ufw:
+#     rule: allow
+#     port: '23'
+#     proto: tcp
+#   when: ansible_facts['os_family'] == 'Debian'
+

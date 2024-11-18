@@ -1,0 +1,56 @@
+---
+
+- name: Install essential tools
+  ansible.builtin.apt:
+    name:
+      - sudo
+      - mc
+      # - parted
+      - htop
+      # - openjdk-8-jdk # Not supported version
+      - openjdk-11-jdk
+      - openssh-server
+      - fail2ban
+      - git
+      - iptables-persistent
+    state: present
+    update_cache: yes
+
+- name: Install OpenJDK 8 from unstable resources and set it as default
+  block:
+    - name: Add Debian Unstable repository (needed for openjdk-8-jdk)
+      ansible.builtin.apt_repository:
+        repo: "deb http://deb.debian.org/debian/ sid main"
+        state: present
+
+    - name: Install OpenJDK 8 from unstable repository
+      ansible.builtin.apt:
+        name: openjdk-8-jdk
+        state: present
+        update_cache: yes
+
+    - name: Set OpenJDK 8 as the default java alternative
+      ansible.builtin.command: update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java 1
+      args:
+        creates: /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+
+    - name: Set OpenJDK 8 as the default javac alternative
+      ansible.builtin.command: update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac 1
+      args:
+        creates: /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
+
+    - name: Select OpenJDK 8 as the default java version
+      ansible.builtin.command: update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+
+    - name: Select OpenJDK 8 as the default javac version
+      ansible.builtin.command: update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
+
+    - name: Verify Java version
+      ansible.builtin.command: java -version
+      register: java_version_output
+      ignore_errors: yes
+
+    - name: Debug Java version output
+      ansible.builtin.debug:
+        msg: "{{ java_version_output.stdout }}"
+

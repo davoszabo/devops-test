@@ -1,0 +1,8 @@
+- name: Setup basic configurations
+  hosts: debian_vms
+  become: true
+  roles:
+    - role: base/install
+    #- role: base/partitions
+    - role: base/configure
+

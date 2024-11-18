@@ -1,0 +1,46 @@
+---
+- name: Set Git global username
+  ansible.builtin.command:
+    cmd: git config --global user.name "{{ git_user_name }}"
+  become_user: "{{ add_user }}"
+
+- name: Set Git global email
+  ansible.builtin.command:
+    cmd: git config --global user.email "{{ git_user_email }}"
+  become_user: "{{ add_user }}"
+
+- name: Ensure .ssh directory exists
+  ansible.builtin.file:
+    path: "{{ ssh_path }}"
+    state: directory
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0700'
+
+- name: Generate SSH key for Git if not present
+  ansible.builtin.command:
+    cmd: ssh-keygen -t rsa -b 4096 -C "{{ git_user_email }}" -f "{{ ssh_path }}/id_rsa" -N ""
+  args:
+    creates: "{{ ssh_path }}/id_rsa"
+  become_user: "{{ add_user }}"
+
+# - name: Start SSH agent and add key
+#   ansible.builtin.shell: |
+#     eval "$(ssh-agent -s)"
+#     ssh-add "{{ ssh_path }}/id_rsa"
+#   become_user: "{{ add_user }}"
+#   when: ansible_env.SSH_AUTH_SOCK is not defined
+
+- name: Add GitHub/GitLab SSH configuration for Git
+  ansible.builtin.lineinfile:
+    path: "{{ ssh_path }}/config"
+    create: yes
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0600'
+    line: |
+      Host github.com gitlab.com
+        User git
+        IdentityFile {{ ssh_path }}/id_rsa
+        IdentitiesOnly yes
+

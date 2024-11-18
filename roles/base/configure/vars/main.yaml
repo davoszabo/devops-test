@@ -1,0 +1,4 @@
+git_user_name: "{{ add_user }}"
+git_user_email: "{{ add_user }}@udemx.eu"
+ssh_path: "{{ add_user_home_dir }}/.ssh"
+
