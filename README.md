@@ -15,6 +15,8 @@ The full cycle from creating VMs to apply all necessary configurations can be fo
 Provision VM via Terraform is supported. Currently only these providers present:
 - Proxmox (cloud-init)
 
+  The [CLOUD INIT QUIDE](CLOUD_INIT_QUIDE.md) leads you how to create the Debian 11 cloud-init template for Proxmox.
+
 Command for provision via Terraform:
 ```
 ansible-playbook playbooks/terraform_provision.yaml
