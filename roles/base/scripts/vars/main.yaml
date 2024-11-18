@@ -1,0 +1,3 @@
+scripts_dir: "{{ add_user_home_dir }}/scripts"
+system_logs_dir: "{{ add_user_home_dir }}/syslogs"
+

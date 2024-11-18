@@ -1,0 +1,6 @@
+- name: Run scripts
+  hosts: debian_vms
+  become: true
+  roles:
+    - role: base/scripts
+

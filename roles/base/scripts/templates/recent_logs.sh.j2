@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ls -t /var/log/* 2>/dev/null | head -3 > "{{ system_logs_dir }}/mod-$(date +'%Y-%m-%d').out"
+

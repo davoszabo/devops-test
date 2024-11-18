@@ -1,0 +1,4 @@
+#!/bin/bash
+
+awk '{print $3}' /proc/loadavg > "{{ system_logs_dir }}/loadavg-$(date +'%Y-%m-%d').out"
+

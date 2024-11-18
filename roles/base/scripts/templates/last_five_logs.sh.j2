@@ -1,0 +1,4 @@
+#!/bin/bash
+
+find /var/log/ -type f -mtime -5 2>/dev/null > "{{ system_logs_dir }}/last_five-$(date +'%Y-%m-%d').out"
+

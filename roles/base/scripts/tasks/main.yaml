@@ -1,0 +1,64 @@
+- name: Copy all script files to the VM
+  ansible.builtin.copy:
+    src: ./
+    dest: "{{ scripts_dir }}/"
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0755'
+
+- name: Create scripts directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ scripts_dir }}"
+    state: directory
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0755'
+
+- name: Find all template files in the templates/ directory and copy
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ scripts_dir }}/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0755'
+  with_fileglob:
+    - ../templates/*.j2
+
+- name: Create syslogs directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ system_logs_dir }}"
+    state: directory
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0755'
+
+- name: Run the iptables setup script
+  ansible.builtin.command:
+    cmd: "{{ scripts_dir }}/iptables_setup.sh"
+
+- name: List 3 most recently modified files
+  ansible.builtin.command:
+    cmd: "{{ scripts_dir }}/recent_logs.sh"
+
+- name: List files modified within 5 days
+  ansible.builtin.command:
+    cmd: "{{ scripts_dir }}/last_five_logs.sh"
+
+- name: Dump 15-minute load average
+  ansible.builtin.command:
+    cmd: "{{ scripts_dir }}/loadavg.sh"
+
+- name: Modify NGINX default configuration
+  ansible.builtin.command:
+    cmd: "{{ scripts_dir }}/update_nginx_title.sh"
+
+- name: Create cron job to run MariaDB dump script every 2 days
+  ansible.builtin.cron:
+    name: "MariaDB container dump every 2 days"
+    minute: "0"
+    hour: "2"
+    day: "*/2"  # Runs every 2 days
+    user: root
+    job: "{{ scripts_dir }}/dump_mariadb_container.sh"
+    state: present
+

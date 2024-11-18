@@ -1,0 +1,22 @@
+#jinja2:variable_start_string:'[%', variable_end_string:'%]', trim_blocks: False
+
+#!/bin/bash
+
+# Variables
+BACKUP_DIR="[% docker_compose_dir %]/db_dumps/$(date +'%Y-%m-%d_%H-%M')"
+CONTAINER_NAME="[% docker_project.mariadb.container_name %]"
+DB_USER="[% docker_project.mariadb.password %]"
+DB_PASSWORD="[% docker_project.mariadb.user %]"
+
+# Create a backup directory
+mkdir -p "$BACKUP_DIR"
+
+# Check if the container is running
+if ! docker ps --filter "name=$CONTAINER_NAME" --format '{{.Names}}' | grep -wq "$CONTAINER_NAME"; then
+    echo "Error: Container $CONTAINER_NAME is not running."
+    exit 1
+fi
+
+# Dump the MariaDB database
+docker exec "$CONTAINER_NAME" mysqldump -u"$DB_USER" -p"$DB_PASSWORD" --all-databases | gzip > "$BACKUP_DIR/db_dump.sql.gz"
+
