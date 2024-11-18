@@ -10,6 +10,8 @@ debian_vms:
 
     add_user: udemx
     add_user_home_dir: "/opt/{{ add_user }}"
+    add_ssh_public_key: |
+      ssh-rsa asd123 user@host
 
     docker_compose_dir: "{{ add_user_home_dir }}/project"
     docker_project:

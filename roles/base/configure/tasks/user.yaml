@@ -6,3 +6,9 @@
     create_home: true
     state: present
 
+- name: Set authorized key for user
+  ansible.posix.authorized_key:
+    user: "{{ add_user }}"
+    state: present
+    key: "{{ add_ssh_public_key }}"
+
