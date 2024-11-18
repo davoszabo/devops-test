@@ -8,3 +8,32 @@ debian_vms:
     # This is the user that has SSH access to the machines.
     ansible_user: root
 
+      
+# For 'terraform' commands
+
+terraform:
+  hosts:
+    localhost:
+  vars:
+    state: "present"
+    # -- Options: proxmox
+    provider: proxmox
+    proxmox: 
+      api_url: "https://192.168.0.2:8006/api2/json"
+      api_token_id: "terraform@pam!terraform-token"
+      api_token_secret: ""
+      target_node: "pve"
+      vmid: 900
+      template_name: "debian11-cloudinit"
+      gateway: "192.168.0.1"
+      vm_cores: 1
+      vm_memory: 2048
+      storage_pool: "local"
+      storage_size: "10G"
+      ciuser: root
+      cipassword: "password"
+      ssh_public_key: |
+        ssh-rsa asd123 user@host
+      name_prefix: "debian11"
+
+
