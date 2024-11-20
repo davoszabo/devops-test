@@ -2,8 +2,10 @@
   ansible.builtin.set_fact:
     nodes: "{{ nodes | default([]) + (groups[item.group] | map('extract', hostvars) | json_query('[].{ip: ansible_host, name: inventory_hostname}') | map('combine', {'type': item.type})) }}"
   loop:
-    - group: debian_vms
-      type: vm
+    - group: debian_servers
+      type: srv
+    - group: debian_workers
+      type: wrk
       # Other groups from inventory can be used as well
 
 - name: Provision VMs in Proxmox with Terraform

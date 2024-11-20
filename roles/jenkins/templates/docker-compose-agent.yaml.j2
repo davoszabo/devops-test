@@ -1,0 +1,13 @@
+services:
+  jenkins-agent:
+    image: jenkins/inbound-agent:{{ jenkins.agent.version }}
+    container_name: {{ jenkins.agent.container_name }}
+    restart: unless-stopped
+    user: "{{ getent_passwd[add_user].1 }}"
+    group_add: 
+      - "{{ getent_group["docker"].1 }}"
+    environment:
+      - JENKINS_URL=http://{{ hostvars[groups['debian_servers'][0]].ansible_host }}:8080
+      - JENKINS_AGENT_NAME={{ jenkins.agent.name }}
+      - JENKINS_SECRET={{ jenkins.agent.secret }}
+

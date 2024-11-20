@@ -1,0 +1,14 @@
+---
+
+- name: Render and copy docker-compose-agent template
+  ansible.builtin.template:
+    src: "docker-compose-agent.yaml.j2"
+    dest: "{{ jenkins_deploy_dir }}/docker-compose-agent.yaml"
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0644'
+
+- name: Start server with Docker Compose
+  ansible.builtin.command: docker compose -f "{{ jenkins_deploy_dir }}/docker-compose-agent.yaml" up -d
+  become_user: "{{ add_user }}"
+

@@ -24,15 +24,11 @@
     database: group
     key: "docker"
 
-- name: Render and copy docker-compose-server template
-  ansible.builtin.template:
-    src: "docker-compose-server.yaml.j2"
-    dest: "{{ jenkins_deploy_dir }}/docker-compose-server.yaml"
-    owner: "{{ add_user }}"
-    group: "{{ add_user }}"
-    mode: '0644'
+- name: Include task to deploy Jenkins Server with registry
+  ansible.builtin.include_tasks: deploy_jenkins_server.yaml
+  when: inventory_hostname in groups['debian_servers']
 
-- name: Start server with Docker Compose
-  ansible.builtin.command: docker compose -f "{{ jenkins_deploy_dir }}/docker-compose-server.yaml" up -d
-  become_user: "{{ add_user }}"
+- name: Include task to deploy Jenkins Agent
+  ansible.builtin.include_tasks: deploy_jenkins_agent.yaml
+  when: inventory_hostname in groups['debian_workers'] and jenkins.agent.enabled
 
