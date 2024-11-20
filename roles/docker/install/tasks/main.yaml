@@ -39,4 +39,18 @@
     groups: docker
     append: yes
 
+- name: Render and copy docker-deamon template
+  ansible.builtin.template:
+    src: "docker-deamon.json.j2"
+    dest: "/etc/docker/daemon.json"
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0644'
+  when: registry.enabled
+
+- name: Restart docker service to apply changes
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+
 

@@ -1,0 +1,38 @@
+- name: Create jenkins/deploy/ directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ jenkins_deploy_dir }}"
+    state: directory
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0755'
+
+- name: Create jenkins/mnt/ directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ jenkins_mount_dir }}"
+    state: directory
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0755'
+
+- name: Get user info from passwd
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ add_user }}"
+
+- name: Get docker info from group
+  ansible.builtin.getent:
+    database: group
+    key: "docker"
+
+- name: Render and copy docker-compose-server template
+  ansible.builtin.template:
+    src: "docker-compose-server.yaml.j2"
+    dest: "{{ jenkins_deploy_dir }}/docker-compose-server.yaml"
+    owner: "{{ add_user }}"
+    group: "{{ add_user }}"
+    mode: '0644'
+
+- name: Start server with Docker Compose
+  ansible.builtin.command: docker compose -f "{{ jenkins_deploy_dir }}/docker-compose-server.yaml" up -d
+  become_user: "{{ add_user }}"
+

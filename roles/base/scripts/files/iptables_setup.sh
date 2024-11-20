@@ -25,6 +25,12 @@ iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 # Allow traffic on port 443 (HTTPS)
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 
+# Allow traffic on port 8080 (Jenkins)
+iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+
+# Allow traffic on port 81 (Docker registry UI)
+iptables -A INPUT -p tcp --dport 81 -j ACCEPT
+
 # Drop all other traffic explicitly
 iptables -A INPUT -j DROP
 

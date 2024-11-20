@@ -24,6 +24,20 @@ debian_vms:
         user: "{{ add_user }}"
         password: ""
 
+    jenkins:
+      version: "2.485"
+      container_name: jenkins
+      location: "{{ add_user_home_dir }}/jenkins"
+
+    registry:
+      enabled: true
+      version: 2.8.3
+      container_name: docker_registry
+      ui:
+        enabled: true
+        version: 2.5.7
+        container_name: docker_registry_ui
+
       
 # For 'terraform' commands
 

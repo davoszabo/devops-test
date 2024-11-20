@@ -1,0 +1,6 @@
+- name: Setup Jenkins configurations
+  hosts: debian_vms
+  become: true
+  roles:
+    - role: jenkins
+
