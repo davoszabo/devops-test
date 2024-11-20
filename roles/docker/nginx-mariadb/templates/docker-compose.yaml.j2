@@ -18,7 +18,7 @@ services:
     container_name: {{ docker_project.mariadb.container_name }}
     restart: unless-stopped
     environment:
-      # MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: udemx-db
       MYSQL_USER: {{ docker_project.mariadb.user }}
       MYSQL_PASSWORD: {{ docker_project.mariadb.password }}

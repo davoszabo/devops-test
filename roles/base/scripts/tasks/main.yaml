@@ -51,6 +51,7 @@
 - name: Modify NGINX default configuration
   ansible.builtin.command:
     cmd: "{{ scripts_dir }}/update_nginx_title.sh"
+  become_user: "{{ add_user }}"
 
 - name: Create cron job to run MariaDB dump script every 2 days
   ansible.builtin.cron:

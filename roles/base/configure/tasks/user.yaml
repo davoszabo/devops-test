@@ -6,6 +6,13 @@
     create_home: true
     state: present
 
+- name: Add user to sudoers
+  community.general.sudoers:
+    name: user-to-sudo
+    state: present
+    user: "{{ add_user }}"
+    commands: ALL
+
 - name: Set authorized key for user
   ansible.posix.authorized_key:
     user: "{{ add_user }}"
